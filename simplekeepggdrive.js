@@ -7,8 +7,8 @@
 */
 
 
-var channelToken = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"; // Insert Channel Access Token
-var gdrivefolderId = "XXXXXXXXXXXXXXXXXXXXXXXXXXXX"; // Insert Folder ID Google Drive (NOT urL)
+var channelToken = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"; // Insert Channel Access Token
+var gdrivefolderId = "XXXXXXXXXXXXXXXXXXXXXXXXXXX"; // Insert Folder ID Google Drive
 
 function replyMsg(replyToken, mess, channelToken) {
   var url = 'https://api.line.me/v2/bot/message/reply';
@@ -52,7 +52,7 @@ function doPost(e) {
     var replyToken = event.replyToken;
     var message = event.message;
 
-    //pdf type
+    //pdf/docx type
     if (type === 'message' && message.type === 'file') {
       var fileName = message.fileName;
       var fileType = fileName.split('.').pop().toLowerCase();
@@ -65,7 +65,18 @@ function doPost(e) {
           var mess = [{'type': 'text', 'text': "❌ There was a problem saving the PDF file."}];
           replyMsg(replyToken, mess, channelToken);
         }
-      } else {
+      } else if (fileType === "docx" || fileType === "doc"){
+         var fileUrl = handleFileMessage(message.id, fileName, channelToken);
+        if (fileUrl) {
+          var mess = [{'type': 'text', 'text': "[" + fileName + "]\n✅ File uploaded successfully.\n" + fileUrl}];
+          replyMsg(replyToken, mess, channelToken);
+        } else {
+          var mess = [{'type': 'text', 'text': "❌ There was a problem saving the PDF file."}];
+          replyMsg(replyToken, mess, channelToken);
+        }
+      }
+      else{
+
       }
     }
     
